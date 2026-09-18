@@ -1,0 +1,625 @@
+{
+  "version": 1,
+  "place": "alabs",
+  "title": "alabs",
+  "summary": "A local-first macOS workspace. Rust enforces the filesystem boundary, React and Monaco present the files, and a local model is optional. Paths are relative to this repository.",
+  "groups": [
+    {
+      "id": "explain",
+      "label": "Explain alabs",
+      "note": "What alabs is, what must stay true, and how the pieces connect."
+    },
+    {
+      "id": "atlas",
+      "label": "Knowledge, creatures and artwork",
+      "note": "Knowledge folders, creature definitions and the artwork."
+    },
+    {
+      "id": "shell",
+      "label": "Desktop shell (Tauri)",
+      "note": "Window, permissions, content security policy and the Rust entry point."
+    },
+    {
+      "id": "native",
+      "label": "Native operations (Rust)",
+      "note": "Everything that touches the disk, runs a program or opens a socket."
+    },
+    {
+      "id": "bridge",
+      "label": "Bridge and launch",
+      "note": "How the interface reaches Rust and what happens when alabs opens."
+    },
+    {
+      "id": "interface",
+      "label": "Interface (React and Monaco)",
+      "note": "The surfaces a person works in."
+    },
+    {
+      "id": "views",
+      "label": "Visual Views and Raven",
+      "note": "Maps of a work folder: how they are checked, drawn and shown."
+    },
+    {
+      "id": "model",
+      "label": "Optional local model",
+      "note": "The two features that need Ollama; nothing else does."
+    },
+    {
+      "id": "build",
+      "label": "Build machinery",
+      "note": "What turns the source into an application."
+    }
+  ],
+  "landmarks": [
+    {
+      "id": "docs",
+      "groupId": "explain",
+      "label": "Root documents",
+      "note": "README, product truth, system boundaries, runtime architecture, principles, licence.",
+      "paths": [
+        "README.md",
+        "ALABS.md",
+        "SYSTEM.md",
+        "ARCHITECTURE.md",
+        "PRINCIPLES.md",
+        "LICENSE"
+      ]
+    },
+    {
+      "id": "notices",
+      "groupId": "explain",
+      "label": "Third-party notices",
+      "note": "What a built application contains from other projects, and under which licences.",
+      "paths": [
+        "THIRD_PARTY_NOTICES.md"
+      ]
+    },
+    {
+      "id": "knowledge",
+      "groupId": "atlas",
+      "label": "Knowledge folders",
+      "note": "Context, wiki, definitions and views: each README says what alabs does with the folder.",
+      "paths": [
+        "context/README.md",
+        "wiki/README.md",
+        "definitions/README.md",
+        "views/README.md"
+      ]
+    },
+    {
+      "id": "creatures",
+      "groupId": "atlas",
+      "label": "Creatures and Raven",
+      "note": "Raven's name, job and model come from CREATURE.md, read at build time by creatures.ts.",
+      "paths": [
+        "creatures/README.md",
+        "creatures/raven/CREATURE.md",
+        "src/creatures.ts"
+      ]
+    },
+    {
+      "id": "brand",
+      "groupId": "atlas",
+      "label": "Brand artwork",
+      "note": "The wordmark and the alabs character, with their status and licensing note.",
+      "paths": [
+        "assets/brand/README.md",
+        "assets/brand/alabs-main-logo.jpeg",
+        "assets/brand/alabs-icon.jpeg"
+      ]
+    },
+    {
+      "id": "illustrations",
+      "groupId": "atlas",
+      "label": "Supporting images",
+      "note": "Illustrations the README uses to explain ideas; not screenshots.",
+      "paths": [
+        "assets/supporting-assets/README.md",
+        "assets/supporting-assets/supporting-image-1.jpeg",
+        "assets/supporting-assets/supporting-image-2.jpeg",
+        "assets/supporting-assets/atlas-map-idea.jpeg"
+      ]
+    },
+    {
+      "id": "tauri-config",
+      "groupId": "shell",
+      "label": "Tauri configuration",
+      "note": "Window size, content security policy, the two granted permissions and the Rust crate list.",
+      "paths": [
+        "src-tauri/tauri.conf.json",
+        "src-tauri/capabilities/default.json",
+        "src-tauri/Cargo.toml",
+        "src-tauri/Cargo.lock"
+      ]
+    },
+    {
+      "id": "rust-entry",
+      "groupId": "shell",
+      "label": "Rust entry and commands",
+      "note": "Registers every command the interface can call, builds the menu, guards quit.",
+      "paths": [
+        "src-tauri/src/main.rs",
+        "src-tauri/src/lib.rs",
+        "src-tauri/build.rs"
+      ]
+    },
+    {
+      "id": "filesystem",
+      "groupId": "native",
+      "label": "Filesystem boundary",
+      "note": "One directory handle for the open root; read, save, create, move, search and Trash all resolve through it.",
+      "paths": [
+        "src-tauri/src/lib.rs",
+        "src-tauri/src/lib_tests.rs"
+      ]
+    },
+    {
+      "id": "git-helper",
+      "groupId": "native",
+      "label": "Bounded Git helper",
+      "note": "Runs /usr/bin/git with fixed hardened arguments, a 5 second deadline and an output cap; also opens Terminal.",
+      "paths": [
+        "src-tauri/src/git.rs",
+        "src-tauri/src/git_tests.rs"
+      ]
+    },
+    {
+      "id": "model-transport",
+      "groupId": "native",
+      "label": "Local model transport",
+      "note": "One HTTP/1.0 exchange with Ollama at 127.0.0.1:11434, bounded in time and size.",
+      "paths": [
+        "src-tauri/src/local_model.rs",
+        "src-tauri/src/local_model_tests.rs"
+      ]
+    },
+    {
+      "id": "view-files",
+      "groupId": "native",
+      "label": "Visual View files",
+      "note": "Bounded inventory of a place, and the staged write of view.json and map.svg.",
+      "paths": [
+        "src-tauri/src/view_files.rs",
+        "src-tauri/src/view_files_tests.rs"
+      ]
+    },
+    {
+      "id": "bridge",
+      "groupId": "bridge",
+      "label": "TypeScript bridge",
+      "note": "Every call from the interface to Rust goes through this one module.",
+      "paths": [
+        "src/subject.ts"
+      ]
+    },
+    {
+      "id": "launch",
+      "groupId": "bridge",
+      "label": "Launch, places and state",
+      "note": "Reads the state file, opens the remembered root, sorts places from knowledge folders.",
+      "paths": [
+        "src/launch.ts",
+        "src/places.ts",
+        "src/uiState.ts",
+        "src/scopeState.ts"
+      ]
+    },
+    {
+      "id": "app-shell",
+      "groupId": "interface",
+      "label": "Application shell",
+      "note": "Tabs, scopes, keyboard, notices, the rail and the three-column layout.",
+      "paths": [
+        "src/App.tsx",
+        "src/main.tsx",
+        "src/App.css",
+        "src/Rail.tsx",
+        "src/tabs.ts",
+        "src/notices.ts"
+      ]
+    },
+    {
+      "id": "home",
+      "groupId": "interface",
+      "label": "Home and the root map",
+      "note": "The list of places and the map of the whole root.",
+      "paths": [
+        "src/Home.tsx",
+        "src/RootView.tsx",
+        "src/rootMap.ts",
+        "src/rootRender.ts",
+        "src/rootEvidence.ts",
+        "src/rootBuild.ts"
+      ]
+    },
+    {
+      "id": "files",
+      "groupId": "interface",
+      "label": "File tree, search and open",
+      "note": "The tree, on-demand search, and the one way a file becomes an open tab.",
+      "paths": [
+        "src/FileTree.tsx",
+        "src/Search.tsx",
+        "src/openPath.ts"
+      ]
+    },
+    {
+      "id": "editor",
+      "groupId": "interface",
+      "label": "Monaco editor",
+      "note": "Monaco bundled locally with one editor worker; no network.",
+      "paths": [
+        "src/monaco.ts",
+        "src/language.ts"
+      ]
+    },
+    {
+      "id": "markdown",
+      "groupId": "interface",
+      "label": "Markdown",
+      "note": "marked with raw HTML dropped, then DOMPurify; http links are inert.",
+      "paths": [
+        "src/markdown.ts",
+        "src/MarkdownView.tsx"
+      ]
+    },
+    {
+      "id": "overview",
+      "groupId": "interface",
+      "label": "Overview",
+      "note": "Factual facts about a place: README, top level, Git state, view availability.",
+      "paths": [
+        "src/Overview.tsx",
+        "src/overviewFacts.ts"
+      ]
+    },
+    {
+      "id": "changes",
+      "groupId": "interface",
+      "label": "Changes and Task",
+      "note": "Git changes since a handoff baseline, and the task packet for another tool.",
+      "paths": [
+        "src/ChangesView.tsx",
+        "src/changes.ts",
+        "src/TaskView.tsx",
+        "src/task.ts"
+      ]
+    },
+    {
+      "id": "view-surface",
+      "groupId": "views",
+      "label": "Visual View surface",
+      "note": "DOMPurify allowlist plus a local-reference check before any SVG enters the DOM.",
+      "paths": [
+        "src/VisualView.tsx",
+        "src/viewSanitize.ts"
+      ]
+    },
+    {
+      "id": "raven",
+      "groupId": "views",
+      "label": "Raven's workflow",
+      "note": "Inventory and bounded evidence, model calls, validation of every path and anchor, deterministic rendering.",
+      "paths": [
+        "src/viewBuild.ts",
+        "src/viewEvidence.ts",
+        "src/viewMap.ts",
+        "src/viewRender.ts"
+      ]
+    },
+    {
+      "id": "ask",
+      "groupId": "model",
+      "label": "Ask local model",
+      "note": "The Wiki Overview question over the text files of context and wiki.",
+      "paths": [
+        "src/localModel.ts",
+        "src/AskLocalModel.tsx"
+      ]
+    },
+    {
+      "id": "machinery",
+      "groupId": "build",
+      "label": "Build and test configuration",
+      "note": "npm scripts, Vite, TypeScript, the page Vite serves and the lockfile.",
+      "paths": [
+        "package.json",
+        "package-lock.json",
+        "vite.config.ts",
+        "tsconfig.json",
+        "tsconfig.node.json",
+        "index.html"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "app-shell",
+      "to": "files",
+      "label": "renders",
+      "evidence": [
+        {
+          "path": "src/App.tsx",
+          "kind": "import",
+          "anchor": "import { FileTree } from \"./FileTree\";"
+        }
+      ]
+    },
+    {
+      "from": "app-shell",
+      "to": "home",
+      "label": "renders",
+      "evidence": [
+        {
+          "path": "src/App.tsx",
+          "kind": "import",
+          "anchor": "import { HomeBody, HomeSidebar } from \"./Home\";"
+        }
+      ]
+    },
+    {
+      "from": "app-shell",
+      "to": "overview",
+      "label": "renders",
+      "evidence": [
+        {
+          "path": "src/App.tsx",
+          "kind": "import",
+          "anchor": "import { Overview } from \"./Overview\";"
+        }
+      ]
+    },
+    {
+      "from": "app-shell",
+      "to": "markdown",
+      "label": "renders",
+      "evidence": [
+        {
+          "path": "src/App.tsx",
+          "kind": "import",
+          "anchor": "import { MarkdownView } from \"./MarkdownView\";"
+        }
+      ]
+    },
+    {
+      "from": "app-shell",
+      "to": "view-surface",
+      "label": "renders",
+      "evidence": [
+        {
+          "path": "src/App.tsx",
+          "kind": "import",
+          "anchor": "import { VisualView } from \"./VisualView\";"
+        }
+      ]
+    },
+    {
+      "from": "app-shell",
+      "to": "changes",
+      "label": "renders",
+      "evidence": [
+        {
+          "path": "src/App.tsx",
+          "kind": "import",
+          "anchor": "import { TaskView } from \"./TaskView\";"
+        }
+      ]
+    },
+    {
+      "from": "app-shell",
+      "to": "raven",
+      "label": "queues Run Raven",
+      "evidence": [
+        {
+          "path": "src/App.tsx",
+          "kind": "import",
+          "anchor": "import { buildView, ViewQueue, type BuildIo, type BuildOutcome, type BuildState } from \"./viewBuild\";"
+        }
+      ]
+    },
+    {
+      "from": "app-shell",
+      "to": "creatures",
+      "label": "binds Raven's model",
+      "evidence": [
+        {
+          "path": "src/App.tsx",
+          "kind": "import",
+          "anchor": "import { RAVEN } from \"./creatures\";"
+        }
+      ]
+    },
+    {
+      "from": "app-shell",
+      "to": "launch",
+      "label": "starts with",
+      "evidence": [
+        {
+          "path": "src/App.tsx",
+          "kind": "import",
+          "anchor": "import { launch, readHome, type HomeData, type RootViewState } from \"./launch\";"
+        }
+      ]
+    },
+    {
+      "from": "app-shell",
+      "to": "editor",
+      "label": "loads Monaco",
+      "evidence": [
+        {
+          "path": "src/main.tsx",
+          "kind": "import",
+          "anchor": "import \"./monaco\";"
+        }
+      ]
+    },
+    {
+      "from": "launch",
+      "to": "bridge",
+      "label": "reads through",
+      "evidence": [
+        {
+          "path": "src/launch.ts",
+          "kind": "import",
+          "anchor": "import type { Entry, EntryKind, RootInfo } from \"./subject\";"
+        }
+      ]
+    },
+    {
+      "from": "ask",
+      "to": "bridge",
+      "label": "calls Rust through",
+      "evidence": [
+        {
+          "path": "src/AskLocalModel.tsx",
+          "kind": "import",
+          "anchor": "import { askLocalModel, listDir, listLocalModels, readFile, type LocalModelResult, type ModelListResult } from \"./subject\";"
+        }
+      ]
+    },
+    {
+      "from": "view-surface",
+      "to": "bridge",
+      "label": "reads map.svg through",
+      "evidence": [
+        {
+          "path": "src/VisualView.tsx",
+          "kind": "import",
+          "anchor": "import { readFile } from \"./subject\";"
+        }
+      ]
+    },
+    {
+      "from": "view-surface",
+      "to": "creatures",
+      "label": "names Raven",
+      "evidence": [
+        {
+          "path": "src/VisualView.tsx",
+          "kind": "import",
+          "anchor": "import { modelMissingText, RAVEN } from \"./creatures\";"
+        }
+      ]
+    },
+    {
+      "from": "raven",
+      "to": "bridge",
+      "label": "typed against",
+      "evidence": [
+        {
+          "path": "src/viewBuild.ts",
+          "kind": "import",
+          "anchor": "import type { Entry, Inventory, LocalModelResult, SearchResult, SearchSummary } from \"./subject\";"
+        }
+      ]
+    },
+    {
+      "from": "home",
+      "to": "raven",
+      "label": "shares failure shape",
+      "evidence": [
+        {
+          "path": "src/rootBuild.ts",
+          "kind": "import",
+          "anchor": "import type { BuildFailure } from \"./viewBuild\";"
+        }
+      ]
+    },
+    {
+      "from": "home",
+      "to": "view-surface",
+      "label": "reuses selection",
+      "evidence": [
+        {
+          "path": "src/RootView.tsx",
+          "kind": "import",
+          "anchor": "import { drawSelection } from \"./VisualView\";"
+        }
+      ]
+    },
+    {
+      "from": "home",
+      "to": "creatures",
+      "label": "names Raven",
+      "evidence": [
+        {
+          "path": "src/RootView.tsx",
+          "kind": "import",
+          "anchor": "import { modelMissingText, RAVEN } from \"./creatures\";"
+        }
+      ]
+    },
+    {
+      "from": "rust-entry",
+      "to": "git-helper",
+      "label": "git_facts",
+      "evidence": [
+        {
+          "path": "src-tauri/src/lib.rs",
+          "kind": "call",
+          "anchor": "git::inspect(&root, &place, &env, &subject.git_formats)"
+        }
+      ]
+    },
+    {
+      "from": "rust-entry",
+      "to": "model-transport",
+      "label": "ask_local_model",
+      "evidence": [
+        {
+          "path": "src-tauri/src/lib.rs",
+          "kind": "call",
+          "anchor": "local_model::ask("
+        }
+      ]
+    },
+    {
+      "from": "rust-entry",
+      "to": "view-files",
+      "label": "collect_inventory",
+      "evidence": [
+        {
+          "path": "src-tauri/src/lib.rs",
+          "kind": "call",
+          "anchor": "view_files::collect_inventory(&root, &place)"
+        }
+      ]
+    },
+    {
+      "from": "machinery",
+      "to": "app-shell",
+      "label": "serves",
+      "evidence": [
+        {
+          "path": "index.html",
+          "kind": "config",
+          "anchor": "src=\"/src/main.tsx\""
+        }
+      ]
+    },
+    {
+      "from": "creatures",
+      "to": "raven",
+      "label": "documents bounds",
+      "evidence": [
+        {
+          "path": "creatures/raven/CREATURE.md",
+          "kind": "documented",
+          "anchor": "amount of notes (`viewEvidence.ts`)"
+        }
+      ]
+    },
+    {
+      "from": "docs",
+      "to": "creatures",
+      "label": "explains",
+      "evidence": [
+        {
+          "path": "ALABS.md",
+          "kind": "documented",
+          "anchor": "explained by `creatures/README.md`"
+        }
+      ]
+    }
+  ]
+}

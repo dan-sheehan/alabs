@@ -1,0 +1,90 @@
+[package]
+name = "alabs"
+version = "0.1.0"
+description = "A local macOS work environment: one alabs root folder, independent work places inside it, Monaco editing. No watcher, no index, no network in normal use; one optional loopback call to a local Ollama model on request."
+authors = ["Danny Sheehan"]
+license = "MIT"
+repository = "https://github.com/dan-sheehan/alabs"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "alabs_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+# The desktop application. Unchanged: `npm run tauri dev` and `tauri build`
+# use the default features, so this is what they build.
+[[bin]]
+name = "alabs"
+path = "src/main.rs"
+required-features = ["desktop"]
+
+# The local server that serves alabs to Chrome. Built without Tauri:
+# `cargo build --no-default-features --features serve --bin alabs-serve`.
+[[bin]]
+name = "alabs-serve"
+path = "src/bin/alabs-serve.rs"
+required-features = ["serve"]
+
+[features]
+default = ["desktop"]
+# The Tauri desktop front door: commands, menu, window, run loop.
+desktop = ["dep:tauri", "dep:tauri-plugin-dialog", "dep:tauri-build"]
+# The loopback HTTP front door. Deliberately shares no dependency with
+# `desktop`, so the server never links Tauri.
+serve = ["dep:axum", "dep:tokio", "dep:tower", "dep:tower-http", "dep:futures-core"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [], optional = true }
+
+[dependencies]
+tauri = { version = "2", features = [], optional = true }
+tauri-plugin-dialog = { version = "2", optional = true }
+
+# The local server (`serve`). Default features are off everywhere: only what
+# the server actually uses is compiled in. `tokio`, `tower` and `tower-http`
+# are already resolved for the desktop build through Tauri, at these
+# versions; `axum` is the one new dependency tree.
+axum = { version = "0.8.9", default-features = false, features = [
+    "http1",
+    "json",
+    "tokio",
+], optional = true }
+tokio = { version = "1.53.1", default-features = false, features = [
+    "macros",
+    "net",
+    "rt-multi-thread",
+    "signal",
+    "sync",
+], optional = true }
+tower = { version = "0.5.3", default-features = false, features = [
+    "util",
+], optional = true }
+tower-http = { version = "0.6.11", default-features = false, features = [
+    "fs",
+    "set-header",
+    "timeout",
+], optional = true }
+# The `Stream` trait `axum::body::Body::from_stream` takes, so streamed search
+# results leave the server as they are found rather than being collected
+# first. Already in the resolved graph at this version (axum depends on it),
+# so naming it here adds no crate; nothing else in it is used. MIT/Apache-2.0.
+futures-core = { version = "0.3.34", default-features = false, optional = true }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+cap-std = "4"
+ignore = "0.4"
+libc = "0.2"
+
+
+# Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+panic = "abort"
+strip = true

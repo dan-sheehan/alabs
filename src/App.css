@@ -1,0 +1,1731 @@
+/* alabs Stage 1 tokens (DESIGN.md section 3). Names are the contract. */
+:root {
+  --bg: #1b1b1b;
+  --hover: #222222;
+  --sel: #232323;
+  --line: #2c2c2c;
+  --border: #363636;
+  --line-strong: #4a4a4a;
+  --text: #d6d6d6;
+  --strong: #ffffff;
+  --muted: #8c8c8c;
+  --dim: #5f5f5f;
+  --pos: #4ea1ff;
+  --git: #3fbfa0;
+  --folder: #9a9a9a;
+  --know: #9d8cff;
+  --dirty: #e2c08d;
+  --error: #f48771;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", Menlo, monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 1px solid var(--pos);
+  outline-offset: -1px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.strong {
+  color: var(--strong);
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.error {
+  color: var(--error);
+}
+
+/* Text inside a right-to-left ellipsis box keeps its own left-to-right order. */
+.ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--dim);
+  white-space: nowrap;
+}
+
+.tag-detail {
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+/* Command chip */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  font-size: 12px;
+  white-space: nowrap;
+  flex: none;
+}
+
+.chip:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.chip-primary {
+  color: var(--pos);
+  border-color: var(--pos);
+}
+
+.chip-danger {
+  color: var(--error);
+}
+
+.chip:disabled {
+  color: var(--dim);
+  border-color: var(--dim);
+}
+
+/* Navigation link */
+.navlink {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--pos);
+  white-space: nowrap;
+}
+
+.navlink:disabled {
+  color: var(--dim);
+}
+
+/* Input */
+.input {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 4px 6px;
+  font: inherit;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--pos);
+}
+
+/* Kind swatch: 8px square */
+.swatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex: none;
+}
+
+.swatch-git {
+  background: var(--git);
+}
+
+.swatch-folder {
+  background: var(--folder);
+}
+
+.swatch-know {
+  background: var(--know);
+}
+
+.swatch-missing {
+  border: 1px dashed var(--dim);
+}
+
+.active-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pos);
+  flex: none;
+}
+
+.dirty-mark {
+  color: var(--dirty);
+}
+
+/* Window */
+.shell {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 184px 240px 1fr;
+  grid-template-rows: 1fr 22px;
+  grid-template-areas:
+    "rail sidebar main"
+    "status status status";
+}
+
+/* Rail */
+.rail {
+  grid-area: rail;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: 1px solid var(--line-strong);
+  user-select: none;
+}
+
+.rail-locked .rail-row,
+.rail-locked .rail-footer {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.rail-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 34px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.rail-app {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--strong);
+}
+
+.rail-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 10px;
+}
+
+.rail-section::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.rail-work {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.rail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 10px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+}
+
+.rail-row:hover {
+  background: var(--hover);
+}
+
+.rail-inert {
+  cursor: default;
+}
+
+.rail-inert:hover {
+  background: none;
+}
+
+.rail-current,
+.rail-current:hover {
+  background: var(--sel);
+  border-left-color: var(--pos);
+}
+
+.rail-current .rail-name {
+  color: var(--strong);
+  font-weight: 500;
+}
+
+.rail-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rail-not-created .rail-name {
+  font-style: italic;
+  color: var(--muted);
+}
+
+.rail-suffix {
+  font-size: 10.5px;
+  color: var(--muted);
+  flex: none;
+}
+
+.rail-footer {
+  margin-top: auto;
+  padding: 10px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 34px;
+}
+
+/* Where `Change root…` sits when the runtime owns the root and there is
+   nothing to change: the same line, said rather than offered. */
+.rail-fixed {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.rail-root {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  direction: rtl;
+  text-align: left;
+  color: var(--text);
+}
+
+/* Sidebar */
+.sidebar {
+  grid-area: sidebar;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  border-right: 1px solid var(--line-strong);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sidebar-identity .sidebar-header {
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar-full-title {
+  padding: 8px 10px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--line);
+  user-select: text;
+}
+
+.sidebar-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-actions {
+  display: flex;
+  gap: 6px;
+  height: 34px;
+  align-items: center;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sidebar-header .navlink {
+  flex: none;
+  margin-left: 2px;
+}
+
+.sidebar-facts,
+.sidebar-hint {
+  padding: 10px;
+  font-size: 12px;
+}
+
+.sidebar-hint {
+  padding-top: 0;
+}
+
+/* Tree */
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding-right: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  user-select: none;
+  cursor: pointer;
+  box-shadow: inset 2px 0 0 transparent;
+}
+
+.tree-open {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  height: 26px;
+  text-align: left;
+}
+
+.tree-open:focus-visible,
+.search-hit:focus-visible {
+  outline-offset: -2px;
+}
+
+.tree-row:hover {
+  background: var(--hover);
+}
+
+.tree-selected,
+.tree-active,
+.tree-active:hover {
+  background: var(--sel);
+  box-shadow: inset 2px 0 0 var(--pos);
+}
+
+/* A selected folder is the target for new files, not an open file: same background, neutral bar. */
+.tree-selected {
+  box-shadow: inset 2px 0 0 var(--line-strong);
+}
+
+.tree-active .tree-name {
+  color: var(--strong);
+}
+
+.tree-icon {
+  display: inline-block;
+  width: 10px;
+  color: var(--muted);
+  flex: none;
+  text-align: center;
+}
+
+.tree-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tree-children {
+  position: relative;
+}
+
+.tree-actions {
+  display: none;
+  flex: none;
+  gap: 2px;
+}
+
+.tree-row:hover .tree-actions,
+.tree-row:focus-within .tree-actions {
+  display: inline-flex;
+}
+
+.tree-action {
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.tree-action:hover {
+  background: var(--sel);
+  color: var(--strong);
+}
+
+.tree-note,
+.tree-error {
+  height: 26px;
+  line-height: 26px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.tree-error {
+  color: var(--error);
+  white-space: normal;
+  height: auto;
+  line-height: 1.35;
+  padding: 4px 10px;
+}
+
+/* Search */
+.search {
+  padding: 6px 10px;
+}
+
+.search-form {
+  display: flex;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-results {
+  margin: 6px -10px 0;
+}
+
+.search-note {
+  height: 26px;
+  line-height: 26px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.search-hit {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 26px;
+  padding: 2px 10px;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid var(--line);
+}
+
+.search-hit:hover {
+  background: var(--hover);
+}
+
+.search-hit-path,
+.search-hit-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.search-hit-text {
+  font-size: 11px;
+}
+
+/* Main */
+.main {
+  grid-area: main;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-strip {
+  flex: none;
+  display: flex;
+  height: 34px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border-right: 1px solid var(--line);
+  color: var(--muted);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: inset 0 -2px 0 transparent;
+}
+
+.tab-active {
+  color: var(--strong);
+  box-shadow: inset 0 -2px 0 var(--pos);
+}
+
+.tab-pinned {
+  cursor: default;
+}
+
+.tab-close {
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  text-align: center;
+  color: inherit;
+}
+
+.tab-x {
+  display: none;
+}
+
+.tab:hover .tab-x {
+  display: inline;
+}
+
+.tab-dot {
+  display: none;
+  color: var(--dirty);
+}
+
+.tab-dirty .tab-dot {
+  display: inline;
+}
+
+.tab-dirty:hover .tab-dot {
+  display: none;
+}
+
+.tab-disk-mark {
+  color: var(--error);
+  font-weight: 700;
+}
+
+.where {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.where-mark {
+  color: var(--pos);
+}
+
+.where-place {
+  flex: none;
+}
+
+.where-path {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: rtl;
+  text-align: left;
+}
+
+.notice {
+  flex: none;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 12px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notice-error {
+  color: var(--error);
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.first-launch {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.first-launch p {
+  margin: 0;
+}
+
+.editor-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The Monaco wrapper fills whatever the banner leaves. */
+.editor-body > section {
+  flex: 1;
+  min-height: 0;
+}
+
+/* File changed on disk, file missing, unsaved edits elsewhere (DESIGN.md
+   section 4). Named `disk-banner` because Monaco ships its own
+   `.editor-banner` rule (display flex, 26px high) that would otherwise
+   apply to ours. */
+.disk-banner {
+  flex: none;
+  display: block;
+  padding: 6px 12px;
+  color: var(--dirty);
+  border-left: 2px solid var(--dirty);
+  line-height: 1.4;
+}
+
+.disk-banner .chip {
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.overview .disk-banner {
+  margin: 0 0 10px;
+  max-width: 72ch;
+}
+
+.overview .disk-banner .chip,
+.markdown-tab .disk-banner .chip {
+  display: inline-flex;
+  margin: 6px 0 0;
+}
+
+.markdown-tab .disk-banner {
+  margin: 8px 20px 0;
+}
+
+.editor-message {
+  padding: 16px;
+}
+
+/* Home: the ACTIVE WORK row, then the root Visual View filling the canvas */
+.home {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-reading {
+  padding: 20px;
+}
+
+.active-work {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  min-height: 26px;
+  padding: 4px 0;
+  margin: 0 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.active-work-name {
+  flex: 1 1 160px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.active-work-counts {
+  white-space: nowrap;
+}
+
+.active-return {
+  margin-left: auto;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.root-view {
+  flex: 1;
+  min-height: 0;
+}
+
+.root-spec {
+  margin-bottom: 8px;
+}
+
+.root-highlights {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.root-highlight {
+  line-height: 26px;
+}
+
+.root-view .overview-actions {
+  flex-wrap: wrap;
+}
+
+/* Home middle column: the dense place list (DESIGN.md 6.2) */
+.side-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 10px;
+}
+
+.side-section::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.side-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.side-row:hover {
+  background: var(--hover);
+}
+
+.side-inert {
+  cursor: default;
+}
+
+.side-inert:hover {
+  background: none;
+}
+
+.side-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.side-not-created .side-name {
+  font-style: italic;
+}
+
+.side-tag {
+  flex: none;
+  font-size: 10.5px;
+}
+
+.side-suffix {
+  flex: none;
+  font-size: 10.5px;
+  color: var(--muted);
+  padding: 0 4px;
+  height: 22px;
+}
+
+.side-suffix:hover:not(:disabled) {
+  background: var(--sel);
+  color: var(--text);
+}
+
+.side-new {
+  display: block;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 10px;
+  width: 100%;
+  text-align: left;
+}
+
+.side-new:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.side-empty {
+  padding: 4px 10px 6px;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+/* Status bar */
+.status {
+  grid-area: status;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  border-top: 1px solid var(--line-strong);
+  font-size: 11.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+  min-width: 280px;
+  max-width: 420px;
+  padding: 16px;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  font-size: 13px;
+}
+
+.modal-text {
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.modal-input {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.modal-error {
+  margin-bottom: 12px;
+  color: var(--error);
+  line-height: 1.4;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+/* Overview (pinned first tab of every place) */
+.overview-scope {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.overview-scope[hidden] {
+  display: none;
+}
+
+.overview {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 20px;
+}
+
+.overview-section {
+  position: relative;
+  border-top: 1px solid var(--line);
+  padding: 16px 0 10px;
+  margin-bottom: 12px;
+}
+
+.overview-tag {
+  position: absolute;
+  top: -7px;
+  left: 0;
+  display: flex;
+  gap: 8px;
+  padding-right: 6px;
+  background: var(--bg);
+}
+
+.overview-excerpt {
+  margin: 0 0 8px;
+  max-width: 72ch;
+  line-height: 1.5;
+}
+
+.overview-missing {
+  margin: 0 0 12px;
+  max-width: 72ch;
+  line-height: 1.5;
+}
+
+.overview-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-weight: 400;
+  height: 26px;
+  padding: 0 6px 0 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  height: 26px;
+  padding: 0 6px 0 0;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-row {
+  cursor: pointer;
+}
+
+.table-row:hover,
+.table-row:focus-visible {
+  background: var(--hover);
+}
+
+.table-link {
+  text-align: right;
+}
+
+.table-link .navlink {
+  visibility: hidden;
+}
+
+.table-row:hover .table-link .navlink,
+.table-row:focus-visible .table-link .navlink {
+  visibility: visible;
+}
+
+.table td .swatch {
+  vertical-align: middle;
+  margin-right: 2px;
+}
+
+/* Missing place rows in the rail */
+.swatch-error {
+  border-color: var(--error);
+}
+
+/* Kind word beside a repository name, the same GIT tag the root map prints in its boxes. */
+.kind-tag {
+  flex: none;
+}
+
+.rail-missing .rail-name {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.know-open {
+  cursor: pointer;
+}
+
+.know-open:hover {
+  background: var(--hover);
+}
+
+.editor-message .mono {
+  margin-bottom: 6px;
+}
+
+/* Overview action row, columns and THIS PLACE spec block (DESIGN.md 6.5) */
+.overview-action-row {
+  align-items: center;
+  min-height: 26px;
+  margin-bottom: 14px;
+}
+
+.overview-asof {
+  margin-left: auto;
+  font-size: 11.5px;
+}
+
+.overview-asof .navlink {
+  font-size: 11.5px;
+}
+
+.overview-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 8px 20px;
+  align-items: start;
+}
+
+.overview-columns-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.overview-left {
+  min-width: 0;
+}
+
+.overview-right {
+  min-width: 0;
+}
+
+.spec {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 3px 12px;
+  margin: 0;
+}
+
+.spec dt {
+  line-height: 26px;
+}
+
+.spec dd {
+  margin: 0;
+  line-height: 26px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spec dd .swatch {
+  vertical-align: middle;
+  margin-right: 2px;
+}
+
+.where-git {
+  margin-left: auto;
+  flex: none;
+  padding-left: 12px;
+}
+
+/* Markdown tab (DESIGN.md 6.6) and rendered README excerpt */
+.markdown-tab {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.surface-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.surface-path {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.markdown-note {
+  padding: 16px 20px;
+}
+
+.markdown-body {
+  padding: 16px 20px;
+  max-width: 72ch;
+  line-height: 1.5;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.markdown-body[hidden] {
+  display: none;
+}
+
+.overview-excerpt.markdown-body {
+  padding: 0;
+  margin: 0 0 8px;
+}
+
+.markdown-body > :first-child {
+  margin-top: 0;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  color: var(--strong);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.2em 0 0.4em;
+}
+
+.markdown-body h1 {
+  font-size: 18px;
+}
+
+.markdown-body h2 {
+  font-size: 15px;
+}
+
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  font-size: 13px;
+}
+
+.markdown-body p,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body blockquote,
+.markdown-body pre,
+.markdown-body table {
+  margin: 0 0 0.8em;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 1.5em;
+}
+
+.markdown-body blockquote {
+  border-left: 2px solid var(--line-strong);
+  padding-left: 10px;
+  color: var(--muted);
+}
+
+.markdown-body code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.markdown-body pre {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  overflow-x: auto;
+}
+
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 1em 0;
+}
+
+.markdown-body table {
+  border-collapse: collapse;
+}
+
+.markdown-body th,
+.markdown-body td {
+  text-align: left;
+  padding: 0 10px 0 0;
+  height: 26px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.markdown-body th {
+  font-weight: 600;
+  border-bottom-color: var(--border);
+}
+
+.markdown-body a[data-path] {
+  color: var(--pos);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.markdown-body a[data-path]:hover {
+  background: var(--hover);
+}
+
+/* Visual View tab (DESIGN.md 6.8): the drawing left, a 300px inspector right */
+.tab-kind {
+  margin-right: 6px;
+}
+
+.view-tab {
+  container-type: inline-size;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-columns {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+}
+
+/* Keep the inspector alongside only when the 760px map also fits. */
+@container (max-width: 1084px) {
+  .view-columns {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(180px, 1fr) minmax(120px, 0.55fr);
+  }
+
+  .view-columns .view-inspector {
+    border-left: 0;
+    border-top: 1px solid var(--line-strong);
+  }
+}
+
+.view-main {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.view-canvas {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+}
+
+.view-canvas[hidden] {
+  display: none;
+}
+
+.view-canvas svg {
+  display: block;
+  width: 100%;
+  min-width: 760px;
+  height: auto;
+}
+
+.view-canvas [data-landmark] {
+  cursor: pointer;
+}
+
+.view-canvas [data-landmark]:hover {
+  filter: brightness(1.2);
+}
+
+.view-state {
+  padding: 16px;
+  line-height: 1.5;
+  max-width: 72ch;
+}
+
+.view-state .chip {
+  margin-top: 10px;
+}
+
+.view-state-hint {
+  margin-top: 4px;
+}
+
+.view-build-status {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.view-inspector {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  border-left: 1px solid var(--line-strong);
+  padding: 12px 10px;
+}
+
+.view-landmark-name {
+  font-size: 12.5px;
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+
+.view-landmark-note {
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.view-files-tag {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.view-files {
+  display: flex;
+  flex-direction: column;
+}
+
+.view-file {
+  display: block;
+  width: 100%;
+  min-height: 26px;
+  padding: 4px 0;
+  line-height: 18px;
+  text-align: left;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.view-file:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.view-file-bad {
+  cursor: default;
+}
+
+/* Task tab (DESIGN.md 6.10) */
+.task {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 20px;
+  max-width: 900px;
+}
+
+.task-text,
+.task-constraints,
+.task-fallback {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  line-height: 1.4;
+  font-size: 13px;
+}
+
+.task-fallback {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text);
+}
+
+.task-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 6px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--line);
+}
+
+.task-row:hover {
+  background: var(--hover);
+}
+
+.task-row-ticked {
+  background: var(--sel);
+  box-shadow: inset 2px 0 0 var(--pos);
+}
+
+.task-row input {
+  margin: 0;
+  flex: none;
+  accent-color: var(--pos);
+}
+
+.task-path {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  direction: rtl;
+  text-align: left;
+}
+
+.task-actions {
+  margin: 4px 0 16px;
+}
+
+/* Changes tab (DESIGN.md 6.9): list 300px, the comparison fills the rest */
+.changes {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.changes-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.chip-static {
+  cursor: default;
+}
+
+.changes-note {
+  flex: none;
+  padding: 6px 12px;
+  line-height: 1.4;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.changes-columns {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+}
+
+.changes-list {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  border-right: 1px solid var(--line-strong);
+}
+
+.changes-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.changes-file {
+  cursor: pointer;
+}
+
+.changes-file:hover,
+.changes-file:focus-visible {
+  background: var(--hover);
+}
+
+.changes-selected,
+.changes-selected:hover {
+  background: var(--sel);
+  box-shadow: inset 2px 0 0 var(--pos);
+}
+
+.changes-row-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.changes-open {
+  flex: none;
+  visibility: hidden;
+}
+
+.changes-file:hover .changes-open,
+.changes-file:focus-visible .changes-open,
+.changes-file:focus-within .changes-open {
+  visibility: visible;
+}
+
+.changes-diff {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.diff-titles {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 26px;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.diff-title {
+  font-size: 11.5px;
+}
+
+.changes-state {
+  padding: 16px;
+  line-height: 1.5;
+  max-width: 72ch;
+}
+
+.changes-gone {
+  flex: none;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.changes-diff .disk-banner {
+  margin: 0;
+}
+
+.changes-diff .disk-banner .chip {
+  display: inline-flex;
+  margin: 6px 0 0;
+}
+
+.diff-editor {
+  flex: 1;
+  min-height: 0;
+}
+
+.diff-editor[hidden] {
+  display: none;
+}
+
+/* ASK LOCAL MODEL (Wiki Overview, optional local-model assistance) */
+.ask {
+  max-width: 900px;
+}
+
+.ask-question {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  line-height: 1.4;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.ask-actions {
+  align-items: center;
+}
+
+.ask-status {
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ask-model {
+  height: 26px;
+  font-size: 12px;
+  max-width: 320px;
+}
+
+.ask-answer-block {
+  position: relative;
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.ask-answer {
+  max-width: 72ch;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ask-failure {
+  margin-top: 8px;
+  max-width: 72ch;
+  line-height: 1.5;
+}
+
+/* Unsaved work from before: one row per file, so the list stays readable
+   when several were kept. Nothing here writes; every row is a choice. */
+.modal-wide {
+  max-width: 640px;
+}
+
+.recovery-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.recovery-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px solid var(--line);
+}
+
+.recovery-path {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.recovery-when {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+}
+
+.recovery-actions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 4px;
+}
