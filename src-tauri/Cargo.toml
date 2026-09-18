@@ -1,6 +1,7 @@
 [package]
 name = "alabs"
 version = "0.1.0"
+default-run = "alabs"
 description = "A local macOS work environment: one alabs root folder, independent work places inside it, Monaco editing. No watcher, no index, no network in normal use; one optional loopback call to a local Ollama model on request."
 authors = ["Danny Sheehan"]
 license = "MIT"
